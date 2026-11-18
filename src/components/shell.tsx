@@ -1,7 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { scopeForPath, wavePhrases, faNum } from "@/lib/seo";
+import { scopeForPath, categorizedWave, faNum, faRaw } from "@/lib/seo";
+import { PAY } from "@/lib/pay";
 import { usePulse, writeMeta } from "@/lib/pulse";
 
 const NAV = [
@@ -10,7 +11,10 @@ const NAV = [
   { to: "/services", label: "خدمات" },
   { to: "/directory", label: "دایرکتوری" },
   { to: "/pulse", label: "نبض سئو" },
+  { to: "/analyze", label: "تحلیل" },
+  { to: "/security", label: "امنیت" },
   { to: "/packages", label: "تعرفه" },
+  { to: "/desk", label: "میز کار" },
   { to: "/request", label: "درخواست" },
 ] as const;
 
@@ -24,11 +28,12 @@ export function PulseEngine() {
       const slot = Math.floor(now / 100_000);
       const left = Math.ceil((100_000 - (now % 100_000)) / 1000);
       const scope = scopeForPath(pathname, slot);
-      const phrases = wavePhrases(scope.service, scope.place, slot);
+      const board = categorizedWave(scope.place, slot);
+      const phrases = board.flatMap((group) => group.lines.map((line) => line.phrase));
       writeMeta("keywords", phrases.join("، "));
       writeMeta("royalfam-wave", String(slot));
       writeMeta("royalfam-live-description", phrases.slice(0, 3).join(" — "));
-      apply(slot, left, phrases[0] ?? "");
+      apply(slot, left, `${board[0]?.label ?? "بهترین"}: ${phrases[0] ?? ""}`);
     };
     tick();
     const id = window.setInterval(tick, 1000);
@@ -44,7 +49,7 @@ export function PulseStrip() {
   const left = usePulse((state) => state.left);
   const ready = usePulse((state) => state.ready);
   const scope = scopeForPath(pathname, slot);
-  const phrase = wavePhrases(scope.service, scope.place, slot)[0];
+  const phrase = categorizedWave(scope.place, slot)[0]?.lines[0]?.phrase;
   const width = ready ? `${left}%` : "100%";
 
   return (
@@ -143,18 +148,28 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <p className="text-sm font-semibold">نت داخلی</p>
             <p className="mt-2 text-sm text-muted">فونت و صفحات روی خود سایت‌اند. برای دیده شدن به سرویس خارجی تکیه نمی‌کند.</p>
           </div>
-          <div className="flex flex-col gap-2 text-sm">
-            <Link to="/request" className="text-wine">
+          <div>
+            <p className="text-sm font-semibold">تماس با ما</p>
+            <a href="tel:09366681963" className="mt-2 block text-sm text-wine">
+              {faRaw("09366681963")}
+            </a>
+            <a href="mailto:amirsamyaghobi62@gmail.com" className="mt-1 block break-all text-sm text-wine">
+              amirsamyaghobi62@gmail.com
+            </a>
+            <Link to="/request" className="mt-3 block text-sm text-ink">
               ثبت درخواست
             </Link>
-            <Link to="/pulse" className="text-wine">
-              وضعیت موج سئو
+            <Link to="/analyze" className="mt-1 block text-sm text-ink">
+              تحلیل پیج
             </Link>
-            <Link to="/directory" className="text-wine">
-              پیدا کردن صفحهٔ محلی
+            <Link to="/security" className="mt-1 block text-sm text-ink">
+              امنیت
             </Link>
           </div>
         </div>
+        <p className="mx-auto max-w-6xl px-4 pb-8 text-xs leading-6 text-muted">
+          {PAY.brand}. {PAY.claim}. {PAY.legal}
+        </p>
       </footer>
     </div>
   );

@@ -10,11 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as CoverageRouteImport } from './routes/coverage'
+import { Route as DeskRouteImport } from './routes/desk'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as PackagesRouteImport } from './routes/packages'
 import { Route as PulseRouteImport } from './routes/pulse'
 import { Route as RequestRouteImport } from './routes/request'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as SServiceRouteImport } from './routes/s.$service'
 import { Route as PPlaceIndexRouteImport } from './routes/p/$place/index'
@@ -25,9 +28,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyzeRoute = AnalyzeRouteImport.update({
+  id: '/analyze',
+  path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoverageRoute = CoverageRouteImport.update({
   id: '/coverage',
   path: '/coverage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeskRoute = DeskRouteImport.update({
+  id: '/desk',
+  path: '/desk',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -48,6 +61,11 @@ const PulseRoute = PulseRouteImport.update({
 const RequestRoute = RequestRouteImport.update({
   id: '/request',
   path: '/request',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -73,11 +91,14 @@ const PPlaceServiceRoute = PPlaceServiceRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
   '/coverage': typeof CoverageRoute
+  '/desk': typeof DeskRoute
   '/directory': typeof DirectoryRoute
   '/packages': typeof PackagesRoute
   '/pulse': typeof PulseRoute
   '/request': typeof RequestRoute
+  '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/s/$service': typeof SServiceRoute
   '/p/$place/$service': typeof PPlaceServiceRoute
@@ -85,11 +106,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
   '/coverage': typeof CoverageRoute
+  '/desk': typeof DeskRoute
   '/directory': typeof DirectoryRoute
   '/packages': typeof PackagesRoute
   '/pulse': typeof PulseRoute
   '/request': typeof RequestRoute
+  '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/s/$service': typeof SServiceRoute
   '/p/$place/$service': typeof PPlaceServiceRoute
@@ -98,11 +122,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analyze': typeof AnalyzeRoute
   '/coverage': typeof CoverageRoute
+  '/desk': typeof DeskRoute
   '/directory': typeof DirectoryRoute
   '/packages': typeof PackagesRoute
   '/pulse': typeof PulseRoute
   '/request': typeof RequestRoute
+  '/security': typeof SecurityRoute
   '/services': typeof ServicesRoute
   '/s/$service': typeof SServiceRoute
   '/p/$place/$service': typeof PPlaceServiceRoute
@@ -112,11 +139,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analyze'
     | '/coverage'
+    | '/desk'
     | '/directory'
     | '/packages'
     | '/pulse'
     | '/request'
+    | '/security'
     | '/services'
     | '/s/$service'
     | '/p/$place/$service'
@@ -124,11 +154,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/analyze'
     | '/coverage'
+    | '/desk'
     | '/directory'
     | '/packages'
     | '/pulse'
     | '/request'
+    | '/security'
     | '/services'
     | '/s/$service'
     | '/p/$place/$service'
@@ -136,11 +169,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/analyze'
     | '/coverage'
+    | '/desk'
     | '/directory'
     | '/packages'
     | '/pulse'
     | '/request'
+    | '/security'
     | '/services'
     | '/s/$service'
     | '/p/$place/$service'
@@ -149,11 +185,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyzeRoute: typeof AnalyzeRoute
   CoverageRoute: typeof CoverageRoute
+  DeskRoute: typeof DeskRoute
   DirectoryRoute: typeof DirectoryRoute
   PackagesRoute: typeof PackagesRoute
   PulseRoute: typeof PulseRoute
   RequestRoute: typeof RequestRoute
+  SecurityRoute: typeof SecurityRoute
   ServicesRoute: typeof ServicesRoute
   SServiceRoute: typeof SServiceRoute
   PPlaceServiceRoute: typeof PPlaceServiceRoute
@@ -169,11 +208,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analyze': {
+      id: '/analyze'
+      path: '/analyze'
+      fullPath: '/analyze'
+      preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coverage': {
       id: '/coverage'
       path: '/coverage'
       fullPath: '/coverage'
       preLoaderRoute: typeof CoverageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/desk': {
+      id: '/desk'
+      path: '/desk'
+      fullPath: '/desk'
+      preLoaderRoute: typeof DeskRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -202,6 +255,13 @@ declare module '@tanstack/react-router' {
       path: '/request'
       fullPath: '/request'
       preLoaderRoute: typeof RequestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -237,11 +297,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyzeRoute: AnalyzeRoute,
   CoverageRoute: CoverageRoute,
+  DeskRoute: DeskRoute,
   DirectoryRoute: DirectoryRoute,
   PackagesRoute: PackagesRoute,
   PulseRoute: PulseRoute,
   RequestRoute: RequestRoute,
+  SecurityRoute: SecurityRoute,
   ServicesRoute: ServicesRoute,
   SServiceRoute: SServiceRoute,
   PPlaceServiceRoute: PPlaceServiceRoute,

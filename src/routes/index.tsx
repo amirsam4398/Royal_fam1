@@ -31,9 +31,9 @@ function Home() {
             <Link to="/directory" className="inline-flex min-h-11 items-center rounded-full border border-line bg-card px-5 font-medium">
               دیدن صفحات محلی
             </Link>
-            <a href="/royal-fam-source.zip" download className="inline-flex min-h-11 items-center rounded-full border border-line bg-card px-5 font-medium">
-              دانلود کد
-            </a>
+            <Link to="/desk" className="inline-flex min-h-11 items-center rounded-full border border-line bg-card px-5 font-medium">
+              میز کار
+            </Link>
           </div>
         </div>
         <ol className="grid gap-3 lg:col-span-5">

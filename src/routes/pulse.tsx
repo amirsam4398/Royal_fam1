@@ -3,7 +3,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { landingCount } from "@/data/catalog";
 import { PageIntro, Shell } from "@/components/shell";
 import { usePulse } from "@/lib/pulse";
-import { bankParts, faNum, faRaw, scopeForPath, wavePhrases } from "@/lib/seo";
+import { bankParts, categorizedWave, faNum, faRaw, scopeForPath } from "@/lib/seo";
 
 export const Route = createFileRoute("/pulse")({ component: PulsePage });
 
@@ -14,7 +14,8 @@ function PulsePage() {
   const ready = usePulse((state) => state.ready);
   const log = usePulse((state) => state.log);
   const scope = scopeForPath(pathname, slot);
-  const phrases = wavePhrases(scope.service, scope.place, slot);
+  const board = categorizedWave(scope.place, slot);
+  const phrases = board.flatMap((group) => group.lines.map((line) => line.phrase));
   const parts = bankParts();
 
   return (
@@ -22,23 +23,32 @@ function PulsePage() {
       <PageIntro
         kicker="نبض سئو"
         title="هر ۱۰۰ ثانیه لایهٔ زنده عوض می‌شود"
-        text="عنوان و توضیح اصلی هر صفحه ثابت می‌ماند تا موتور جستجو همان آدرس را بشناسد. چیزی که هر ۱۰۰ ثانیه تازه می‌شود کلیدواژه و توضیح تکمیلی همان صفحه است."
+        text="هر ۱۰۰ ثانیه چهار دسته در مرورگر عوض می‌شود و متای کلیدواژهٔ همان صفحه به‌روز می‌شود. این رتبهٔ گوگل نیست. گوگل برای رتبه‌دادن به meta keywords تکیه نمی‌کند و عنوان اصلی صفحه عمداً ثابت مانده است."
       />
       <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-14 lg:grid-cols-5">
         <section className="rounded-2xl border border-line bg-card p-6 lg:col-span-3">
           <p className="text-sm text-muted">مانده تا موج بعد</p>
           <p className="mt-2 text-5xl font-bold text-wine">{ready ? faNum(left) : "—"}</p>
           <p className="mt-2 text-sm text-muted">شمارهٔ موج: {ready ? faNum(slot) : "در حال هم‌گام شدن"}</p>
-          <h2 className="mt-6 text-lg font-semibold">
-            این موج برای {scope.service.name} در {scope.place.name}
-          </h2>
-          <ul className="mt-3 grid gap-2">
-            {phrases.map((phrase) => (
-              <li key={phrase} className="rounded-xl border border-line px-3 py-2 text-sm">
-                {phrase}
-              </li>
+          <h2 className="mt-6 text-lg font-semibold">دسته‌های این موج در {scope.place.name}</h2>
+          <div className="mt-3 grid gap-3">
+            {board.map((group) => (
+              <section key={group.id} className="rounded-xl border border-line p-3">
+                <h3 className="text-sm font-semibold text-wine">
+                  {group.label}
+                  <span className="ms-2 font-normal text-muted">قصد این موج: {group.intent}</span>
+                </h3>
+                <ul className="mt-2 grid gap-1">
+                  {group.lines.map((line) => (
+                    <li key={line.phrase} className="text-sm">
+                      <span className="text-muted">{line.label}: </span>
+                      {line.phrase}
+                    </li>
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
           <dl className="mt-6 grid gap-3 text-sm">
             <div>
               <dt className="text-muted">meta keywords</dt>

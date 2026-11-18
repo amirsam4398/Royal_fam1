@@ -1,4 +1,4 @@
-import { places, services, type Place, type Service } from "@/data/catalog";
+import { places, services, servicesOf, tierLabel, type Place, type Service } from "@/data/catalog";
 
 export const INTENTS = [
   "بهترین",
@@ -29,30 +29,6 @@ export const INTENTS = [
   "محتوا",
   "مشاوره",
   "نوبت آنلاین",
-  "سالن خوب",
-  "کلینیک خوب",
-  "نوبت امروز",
-  "رزرو سریع",
-  "قیمت مناسب",
-  "تخفیف ویژه",
-  "نمونه کار واقعی",
-  "آدرس دقیق",
-  "نزدیک مترو",
-  "پارکینگ دار",
-  "خانم‌ها",
-  "آقایان",
-  "عروس و داماد",
-  "مخصوص عروس",
-  "رنگ مو",
-  "کوتاهی مو",
-  "کراتین مو",
-  "کاشت ناخن",
-  "اکستنشن مژه",
-  "میکاپ عروس",
-  "لیزر مو",
-  "بوتاکس",
-  "ژل لب",
-  "کاشت مو",
 ] as const;
 
 export const SUFFIXES = [
@@ -72,13 +48,6 @@ export const SUFFIXES = [
   "با نام محله",
   "برای پر شدن نوبت",
   "با معرفی کلینیک",
-  "در نزدیکی شما",
-  "با قیمت شفاف",
-  "رزرو همین امروز",
-  "با تخفیف اولین نوبت",
-  "مناسب محله شما",
-  "با پشتیبانی محلی",
-  "برای جذب مشتری واقعی",
 ] as const;
 
 const digits = "۰۱۲۳۴۵۶۷۸۹";
@@ -125,9 +94,33 @@ export function stablePhrases(service: Service, place: Place) {
   ];
 }
 
+export const PULSE_GROUPS = [
+  { id: "best", label: "بهترین", intents: ["بهترین", "لوکس", "ویژه", "عروس"] },
+  { id: "book", label: "نوبت و قیمت", intents: ["نوبت", "قیمت", "رزرو", "نوبت آنلاین", "تخفیف", "ارزان"] },
+  { id: "near", label: "نزدیک و آدرس", intents: ["نزدیک من", "آدرس", "تلفن", "فوری", "شبانه‌روزی"] },
+  { id: "social", label: "اینستاگرام و سئو", intents: ["اینستاگرام", "پیج اینستاگرام", "سئو گوگل", "تبلیغات محلی", "جذب مشتری", "محتوا"] },
+] as const;
+
+export function categorizedWave(place: Place, slot: number) {
+  return PULSE_GROUPS.map((group) => {
+    const intent = group.intents[slot % group.intents.length] ?? group.intents[0];
+    const lines = ([1, 2, 3] as const).map((tier) => {
+      const list = servicesOf(tier);
+      const service = list[(slot + tier) % list.length] ?? list[0];
+      return {
+        tier,
+        label: tierLabel[tier],
+        service: service.name,
+        phrase: `${intent} ${service.name} در ${place.name}`,
+      };
+    });
+    return { id: group.id, label: group.label, intent, lines };
+  });
+}
+
 export function wavePhrases(service: Service, place: Place, slot: number) {
   const phrases: string[] = [];
-  for (let index = 0; index < 6; index += 1) {
+  for (let index = 0; index < 4; index += 1) {
     const intent = INTENTS[(slot + index) % INTENTS.length];
     phrases.push(`${intent} ${service.name} در ${place.name}`);
   }
@@ -157,7 +150,7 @@ export function landingCopy(service: Service, place: Place) {
         ? "بعد از سالن، نوبت کلینیک زیبایی است. جستجو طولانی‌تر است و مشتری قبل از تماس مقایسه می‌کند."
         : "این دسته بعد از زیبایی پوشش داده می‌شود؛ همان منطق محلی، برای خدماتی که مردم در شهر خودشان می‌گردند.";
   return [
-    `${service.name} در \( {place.name} یک ویترین ثابت است، نه یک آگهی که فردا پاک شود. مشتری که « \){service.name}» را با نام این منطقه جستجو می‌کند باید به یک صفحهٔ مشخص برسد.`,
+    `${service.name} در ${place.name} یک ویترین ثابت است، نه یک آگهی که فردا پاک شود. مشتری که «${service.name}» را با نام این منطقه جستجو می‌کند باید به یک صفحهٔ مشخص برسد.`,
     `نقطه‌های زیر پوشش همین صفحه: ${areas}. ${place.line}. نام محله داخل متن نشسته تا جستجوی محلی به همین کسب‌وکار وصل شود.`,
     `${service.line} ${priority}`,
   ];

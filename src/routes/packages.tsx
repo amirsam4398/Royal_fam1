@@ -1,17 +1,40 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { packages } from "@/data/catalog";
 import { PageIntro, Shell } from "@/components/shell";
+import { PAY } from "@/lib/pay";
 
-export const Route = createFileRoute("/packages")({ component: PackagesPage });
+export const Route = createFileRoute("/packages")({
+  head: () => ({
+    meta: [
+      { title: "تعرفه و پلن‌های رویال فام | ۱۰ توکن رایگان و اشتراک ماهانه" },
+      {
+        name: "description",
+        content:
+          "شروع رایگان با ۱۰ توکن، سپس پلن‌های ۱ تا ۶ ماهه با قیمت پایین‌تر از عرف بازار. پرداخت کارت‌به‌کارت به نام میثم یعقوبی حسنعلی ده.",
+      },
+    ],
+  }),
+  component: PackagesPage,
+});
 
 function PackagesPage() {
   return (
     <Shell>
       <PageIntro
         kicker="تعرفه"
-        title="عدد برای شروع گفتگو است"
-        text="تعرفه شروع گفتگو است. پرداخت از میز کار، کارت‌به‌کارت به نام صاحب حساب، و پیام آماده در واتساپ یا بله."
+        title="از رایگان شروع کنید، بعد اشتراک بگیرید"
+        text="۱۰ توکن رایگان برای تحلیل و تقویم محتوایی. پلن‌های ماهانه پایین‌تر از عرف آژانس‌ها. پرداخت کارت‌به‌کارت و پیگیری از میز کار."
       />
+
+      <div className="mx-auto max-w-6xl px-4 pb-6">
+        <div className="rounded-2xl border border-wine bg-wine p-5 text-paper">
+          <p className="text-sm opacity-90">کارت‌به‌کارت</p>
+          <p className="mt-2 text-2xl font-bold tracking-wide">{PAY.cardGrouped}</p>
+          <p className="mt-1">به‌نام {PAY.holder}</p>
+          <p className="mt-3 text-sm opacity-85">بعد از واریز، تصویر رسید را در واتساپ یا بله بفرستید تا پلن فعال شود.</p>
+        </div>
+      </div>
+
       <ul className="mx-auto grid max-w-6xl gap-4 px-4 pb-14 md:grid-cols-2">
         {packages.map((item) => (
           <li
@@ -39,7 +62,7 @@ function PackagesPage() {
                   : "mt-6 inline-flex min-h-11 items-center rounded-full bg-wine px-5 font-medium text-paper"
               }
             >
-              درخواست این میز
+              {item.id === "free" ? "شروع رایگان" : "درخواست این پلن"}
             </Link>
           </li>
         ))}
